@@ -100,6 +100,95 @@
   <link rel="stylesheet" href="https://assets.calendly.com/assets/external/widget.css" />
   <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
 
+  <!-- ============================================================
+       Discourse — Debug & button-fallback script
+       ------------------------------------------------------------
+       Goals:
+         1. Surface what's happening in the browser console
+            (the button was "refusing to work" with no errors).
+         2. Provide a fallback click handler so the schedule button
+            always does *something* — even if the async Calendly
+            script hasn't loaded yet.
+         3. Catch unhandled errors and unhandled promise rejections.
+
+       Toggle debugging off in DevTools with:
+         window.__discourseDebug = false
+       ============================================================ -->
+  <script>
+    (function () {
+      var DEBUG = window.__discourseDebug !== false;
+
+      function log()  { if (DEBUG) console.log  .apply(console, ["[Discourse]"].concat([].slice.call(arguments))); }
+      function warn() { if (DEBUG) console.warn .apply(console, ["[Discourse]"].concat([].slice.call(arguments))); }
+      function err()  { if (DEBUG) console.error.apply(console, ["[Discourse]"].concat([].slice.call(arguments))); }
+
+      log("debug script loaded");
+
+      // Catch anything the page throws so it shows up in the console
+      window.addEventListener("error", function (e) {
+        err("window error:", e.message, "@", e.filename + ":" + e.lineno + ":" + e.colno);
+      });
+      window.addEventListener("unhandledrejection", function (e) {
+        err("unhandled promise rejection:", e.reason);
+      });
+
+      function calendlyReady() {
+        return !!(window.Calendly && typeof window.Calendly.initPopupWidget === "function");
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        log("DOMContentLoaded");
+
+        var btn = document.querySelector(".btn-schedule");
+        if (!btn) { err("schedule button (.btn-schedule) not found in DOM"); return; }
+        log("button found:", btn);
+
+        var url = btn.getAttribute("data-url");
+        if (!url) { err("button is missing data-url attribute"); return; }
+        log("button data-url:", url);
+
+        log("Calendly ready at DOMContentLoaded:", calendlyReady());
+
+        // The Calendly script is loaded with `async`, so it may not be
+        // available when the user first clicks. Poll for up to 20s.
+        var attempts = 0;
+        var poller = setInterval(function () {
+          attempts++;
+          if (calendlyReady()) {
+            log("Calendly script became available after " + (attempts * 200) + "ms");
+            clearInterval(poller);
+            poller = null;
+          } else if (attempts >= 100) {
+            warn("Calendly never loaded after 20s — click will fall back to opening the URL directly");
+            clearInterval(poller);
+            poller = null;
+          }
+        }, 200);
+
+        // Capture-phase click handler. Runs before Calendly's own
+        // auto-bound handler and stops it, so we have one source of truth.
+        btn.addEventListener("click", function (e) {
+          log("schedule button clicked — calendlyReady:", calendlyReady());
+          e.preventDefault();
+          e.stopImmediatePropagation();
+
+          if (calendlyReady()) {
+            try {
+              log("opening Calendly popup for", url);
+              window.Calendly.initPopupWidget({ url: url });
+            } catch (ex) {
+              err("Calendly.initPopupWidget threw, falling back to window.open:", ex);
+              window.open(url, "_blank", "noopener,noreferrer");
+            }
+          } else {
+            warn("Calendly not yet ready — opening URL in a new tab as a fallback");
+            window.open(url, "_blank", "noopener,noreferrer");
+          }
+        }, true /* capture phase */);
+      });
+    })();
+  </script>
+
   <style>
     /* ----- Schedule button polish ----- */
     .btn-schedule {
@@ -153,6 +242,7 @@
       width: 1.1rem;
       height: 1.1rem;
       flex-shrink: 0;
+      pointer-events: none;
     }
 
     .btn-schedule .btn-arrow {

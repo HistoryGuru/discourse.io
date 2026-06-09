@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Noto+Sans+SC:wght@400;500;600&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap"
     rel="stylesheet"
   />
 </head>
@@ -18,10 +18,14 @@
     <div class="container nav">
       <a href="#" class="logo">Discourse</a>
       <nav class="nav-links">
-        <a href="#about">About</a>
-        <a href="#programs">Programs</a>
-        <a href="#tutors">Tutors</a>
-        <a href="#contact">Contact</a>
+        <a href="#about" data-i18n="nav.about">About</a>
+        <a href="#programs" data-i18n="nav.programs">Programs</a>
+        <a href="#tutors" data-i18n="nav.tutors">Tutors</a>
+        <a href="#contact" data-i18n="nav.contact">Contact</a>
+        <button type="button" class="lang-toggle" id="lang-toggle"
+                data-lang="en" aria-label="Change language">
+          <span class="lang-toggle-label" data-i18n="lang.label">EN</span>
+        </button>
       </nav>
     </div>
   </header>
@@ -30,9 +34,9 @@
     <!-- Hero section — main page introduction -->
     <section class="hero">
       <div class="container hero-inner">
-        <p class="eyebrow">Debate Tutoring Program</p>
+        <p class="eyebrow" data-i18n="hero.eyebrow">Debate Tutoring Program</p>
         <h1 class="hero-title">Discourse</h1>
-        <p class="hero-description">
+        <p class="hero-description" data-i18n="hero.description">
           A brief description goes here. Discourse is a place where students learn to
           think critically, speak with confidence, and engage ideas through rigorous,
           respectful debate.
@@ -46,13 +50,13 @@
               <line x1="8" y1="2" x2="8" y2="6"></line>
               <line x1="3" y1="10" x2="21" y2="10"></line>
             </svg>
-            <span>Schedule a Consultation</span>
+            <span data-i18n="hero.schedule">Schedule a Consultation</span>
             <svg class="btn-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <line x1="5" y1="12" x2="19" y2="12"></line>
               <polyline points="12 5 19 12 12 19"></polyline>
             </svg>
           </button>
-          <a href="#programs" class="btn btn-ghost">Explore Programs</a>
+          <a href="#programs" class="btn btn-ghost" data-i18n="hero.explore">Explore Programs</a>
         </div>
       </div>
     </section>
@@ -60,29 +64,29 @@
     <!-- Section placeholders — to be specified later -->
     <section id="about" class="placeholder-section">
       <div class="container">
-        <h2>About</h2>
-        <p>About section content to be added.</p>
+        <h2 data-i18n="about.heading">About</h2>
+        <p data-i18n="about.body">About section content to be added.</p>
       </div>
     </section>
 
     <section id="programs" class="placeholder-section alt">
       <div class="container">
-        <h2>Programs</h2>
-        <p>Programs section content to be added.</p>
+        <h2 data-i18n="programs.heading">Programs</h2>
+        <p data-i18n="programs.body">Programs section content to be added.</p>
       </div>
     </section>
 
     <section id="tutors" class="placeholder-section">
       <div class="container">
-        <h2>Tutors</h2>
-        <p>Tutors section content to be added.</p>
+        <h2 data-i18n="tutors.heading">Tutors</h2>
+        <p data-i18n="tutors.body">Tutors section content to be added.</p>
       </div>
     </section>
 
     <section id="contact" class="placeholder-section alt">
       <div class="container">
-        <h2>Contact</h2>
-        <p>Contact section content to be added.</p>
+        <h2 data-i18n="contact.heading">Contact</h2>
+        <p data-i18n="contact.body">Contact section content to be added.</p>
         <div class="calendly-inline-widget"
              data-url="https://calendly.com/leroyqu/30min"
              style="min-width:320px;height:700px;margin-top:2.5rem;"></div>
@@ -92,7 +96,7 @@
 
   <footer class="site-footer">
     <div class="container">
-      <p>&copy; 2026 Discourse. All rights reserved.</p>
+      <p data-i18n="footer.copy">&copy; 2026 Discourse. All rights reserved.</p>
     </div>
   </footer>
 
@@ -189,8 +193,167 @@
     })();
   </script>
 
+  <!-- ============================================================
+       Discourse — i18n / language toggle
+       ------------------------------------------------------------
+       Cycles English → 中文 (zh) → हिन्दी (hi) → English …
+       Persists choice in localStorage and updates <html lang>.
+       ============================================================ -->
+  <script>
+    (function () {
+      var LANGS = ["en", "zh", "hi"];
+
+      var STRINGS = {
+        en: {
+          "lang.label": "EN",
+          "nav.about": "About",
+          "nav.programs": "Programs",
+          "nav.tutors": "Tutors",
+          "nav.contact": "Contact",
+          "hero.eyebrow": "Debate Tutoring Program",
+          "hero.description":
+            "A brief description goes here. Discourse is a place where students learn to " +
+            "think critically, speak with confidence, and engage ideas through rigorous, " +
+            "respectful debate.",
+          "hero.schedule": "Schedule a Consultation",
+          "hero.explore": "Explore Programs",
+          "about.heading": "About",
+          "about.body": "About section content to be added.",
+          "programs.heading": "Programs",
+          "programs.body": "Programs section content to be added.",
+          "tutors.heading": "Tutors",
+          "tutors.body": "Tutors section content to be added.",
+          "contact.heading": "Contact",
+          "contact.body": "Contact section content to be added.",
+          "footer.copy": "© 2026 Discourse. All rights reserved."
+        },
+        zh: {
+          "lang.label": "中",
+          "nav.about": "关于",
+          "nav.programs": "课程",
+          "nav.tutors": "导师",
+          "nav.contact": "联系我们",
+          "hero.eyebrow": "辩论辅导课程",
+          "hero.description":
+            "Discourse 是一个让学生学习批判性思考、自信表达,并通过严谨、尊重的辩论 " +
+            "探讨观点的地方。",
+          "hero.schedule": "预约咨询",
+          "hero.explore": "查看课程",
+          "about.heading": "关于",
+          "about.body": "关于部分内容稍后添加。",
+          "programs.heading": "课程",
+          "programs.body": "课程部分内容稍后添加。",
+          "tutors.heading": "导师",
+          "tutors.body": "导师部分内容稍后添加。",
+          "contact.heading": "联系我们",
+          "contact.body": "联系部分内容稍后添加。",
+          "footer.copy": "© 2026 Discourse。保留所有权利。"
+        },
+        hi: {
+          "lang.label": "हि",
+          "nav.about": "परिचय",
+          "nav.programs": "कार्यक्रम",
+          "nav.tutors": "शिक्षक",
+          "nav.contact": "संपर्क",
+          "hero.eyebrow": "वाद-विवाद शिक्षण कार्यक्रम",
+          "hero.description":
+            "Discourse एक ऐसा स्थान है जहाँ छात्र आलोचनात्मक रूप से सोचना, " +
+            "आत्मविश्वास से बोलना और कठोर व सम्मानजनक वाद-विवाद के माध्यम से विचारों " +
+            "से जुड़ना सीखते हैं।",
+          "hero.schedule": "परामर्श निर्धारित करें",
+          "hero.explore": "कार्यक्रम देखें",
+          "about.heading": "परिचय",
+          "about.body": "परिचय अनुभाग की सामग्री बाद में जोड़ी जाएगी।",
+          "programs.heading": "कार्यक्रम",
+          "programs.body": "कार्यक्रम अनुभाग की सामग्री बाद में जोड़ी जाएगी।",
+          "tutors.heading": "शिक्षक",
+          "tutors.body": "शिक्षक अनुभाग की सामग्री बाद में जोड़ी जाएगी।",
+          "contact.heading": "संपर्क",
+          "contact.body": "संपर्क अनुभाग की सामग्री बाद में जोड़ी जाएगी।",
+          "footer.copy": "© 2026 Discourse. सर्वाधिकार सुरक्षित।"
+        }
+      };
+
+      // Font that renders the language well; fall back to Inter/Cormorant.
+      var FONT_BY_LANG = {
+        en: 'var(--font-sans)',
+        zh: '"Noto Sans SC", var(--font-sans)',
+        hi: '"Noto Sans Devanagari", var(--font-sans)'
+      };
+
+      var STORAGE_KEY = "discourse.lang";
+      var initial = (function () {
+        try {
+          var stored = localStorage.getItem(STORAGE_KEY);
+          if (stored && STRINGS[stored]) return stored;
+        } catch (e) { /* localStorage may be blocked */ }
+        return "en";
+      })();
+
+      function applyLang(lang) {
+        var dict = STRINGS[lang] || STRINGS.en;
+        document.documentElement.setAttribute("lang", lang);
+        document.body.style.fontFamily = FONT_BY_LANG[lang] || FONT_BY_LANG.en;
+
+        document.querySelectorAll("[data-i18n]").forEach(function (el) {
+          var key = el.getAttribute("data-i18n");
+          if (dict[key] !== undefined) el.textContent = dict[key];
+        });
+
+        var btn = document.getElementById("lang-toggle");
+        if (btn) btn.setAttribute("data-lang", lang);
+
+        try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) { /* ignore */ }
+      }
+
+      function nextLang(current) {
+        var i = LANGS.indexOf(current);
+        return LANGS[(i + 1) % LANGS.length];
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        applyLang(initial);
+
+        var btn = document.getElementById("lang-toggle");
+        if (!btn) { console.error("[Discourse] #lang-toggle not found"); return; }
+        btn.addEventListener("click", function () {
+          applyLang(nextLang(btn.getAttribute("data-lang") || "en"));
+        });
+      });
+    })();
+  </script>
+
   <style>
-    /* ----- Schedule button polish ----- */
+    /* ----- Language toggle button ----- */
+    .lang-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 2.5rem;
+      height: 2.25rem;
+      padding: 0 0.7rem;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--color-forest);
+      background-color: transparent;
+      border: 1.5px solid var(--color-forest);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .lang-toggle:hover {
+      background-color: var(--color-forest);
+      color: var(--color-off-white);
+    }
+
+    .lang-toggle:focus-visible {
+      outline: 2px solid var(--color-sage);
+      outline-offset: 2px;
+    }
+  </style>
     .btn-schedule {
       display: inline-flex;
       align-items: center;
